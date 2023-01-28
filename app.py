@@ -31,43 +31,32 @@ for i, day in enumerate(collection_day):
         collections_type[day] = 2
 
 
-# @app.route("/callback", methods=['POST'])
-# def callback():
-#     print('trigger')
-#     signature = request.headers['X-Line-Signature']
-#     pushmsg()
-#     body = request.get_data(as_text=True)
-#     app.logger.info("Request body: " + body)
-#     app.logger.info("test")
-#     try:
-#         print(body, signature)
-#         handler.handle(body, signature)
+@app.route("/callback", methods=['POST'])
+def callback():
+    print('trigger')
+    signature = request.headers['X-Line-Signature']
+    pushmsg()
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+    app.logger.info("test")
+    try:
+        print(body, signature)
+        handler.handle(body, signature)
         
-#     except InvalidSignatureError:
-#         print("error")
-#         abort(400)
+    except InvalidSignatureError:
+        print("error")
+        abort(400)
 
-#     return 'OK'
+    return 'OK'
 
-# #學你說話
-# @handler.add(MessageEvent, message=TextMessage)
-# def pretty_echo(event):
-#     print(event.source)
-#     if event.source.user_id != "Udeadbeefdeadbeefdeadbeefdeadbeef":
-        
-#         # Phoebe 愛唱歌
-#         pretty_note = '♫♪♬'
-#         pretty_text = ''
-        
-#         for i in event.message.text:
-        
-#             pretty_text += i
-#             pretty_text += random.choice(pretty_note)
-    
-#         line_bot_api.reply_message(
-#             event.reply_token,
-#             TextSendMessage(text=pretty_text)
-#         )
+## repeat send message 
+@handler.add(MessageEvent, message=TextMessage)
+def pretty_echo(event):
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text)
+    )
 
 @app.route("/test", methods=['POST'])        
 def pushmsg():
